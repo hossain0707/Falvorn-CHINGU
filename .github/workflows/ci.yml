@@ -17,3 +17,6 @@ jobs:
       - run: python -m compileall -q chingu tests
       - run: python -m unittest discover -s tests -v
       - run: node --check chingu/static/app.js
+
+      - run: node --check demo/app.js
+      - run: node --test demo/engine.test.cjs

@@ -22,7 +22,7 @@ A local-first, model-agnostic agent platform for personal and professional work.
 
 ## Public demo
 
-Explore the [interactive technical preview](https://falvorn-chingu.vercel.app). This static, noncommercial demo uses scripted examples and browser-local tools, not live LLM inference. No API key or login is required. For real model execution, use the local quick start below.
+Explore the [interactive technical preview](https://falvorn-chingu.vercel.app). This static, noncommercial demo includes an animated 3D network and editable browser-local workflows, not live LLM inference. No API key or login is required. For real model execution, use the local quick start below.
 
 ## Overview
 
