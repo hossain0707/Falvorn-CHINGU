@@ -1,0 +1,3 @@
+# Hosted AI pilot
+
+Configure a dedicated Groq Free-plan key as GROQ_API_KEY, a random private invite code (16+ characters) as CHINGU_DEMO_CODE, and CHINGU_AI_ENABLED=true in Vercel's server-side environment. Never commit credentials. Deploy demo with its api/inference.js function, then verify live inference. No paid fallback. Local workflows remain available. The invite code is required; warm-instance limits are best-effort, not distributed. Verify account is still on Free plan and hosting terms before launch. Text requests go to Groq. No external tools or actual multi-agent execution. Run node --test demo/hosted-ai.test.cjs.
