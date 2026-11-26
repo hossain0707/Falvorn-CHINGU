@@ -1,0 +1,3 @@
+# CHINGU interactive demo
+
+A static noncommercial technical preview. No server, model inference, analytics, accounts, external actions or API keys. Scripted example workflows are clearly labeled; the calculator and session-only note approvals actually execute locally in the visitor's browser. For real model inference use the repository's local runtime. Serve with `python -m http.server 8080 --directory demo` or import this directory into a static host.
