@@ -17,10 +17,10 @@
  function draw(t){if(!ctx||!w||!h)return;const ms=Math.max(0,t-origin);if(!paused&&state==="welcome"&&ms>=4700){state="ready";stage.dataset.state=state;label.textContent=text.ready[0];step.textContent=text.ready[1];origin=t;}const moving=state==="running"||state==="welcome",staticMotion=paused||media.matches,small=w<=760,progress=Math.min(1,scroll/Math.max(h*.8,1));background(staticMotion?0:t);const [f1,f2,mix]=frameAt(ms);stage.dataset.frame=String(mix<.5?f1:f2);
  let side=small?Math.max(w*1.14,Math.min(h*.73,600)):Math.min(w*.79,h*1.24);
  let x=small?w*.50:w*.73,y=small?h*.78:h*.49;
- if(progress>0){x+=small?0:progress*w*.12;y-=progress*h*.12;side*=1-progress*.16;}
+ if(progress>0){x-=small?0:progress*w*.13;y-=progress*h*(small?.22:.015);side*=1-progress*.06;}
  if(!staticMotion){const sway=moving?Math.sin(ms*.0009)*w*(small?.055:.085):Math.sin(t*.00045)*5;x+=sway+px*12;y+=Math.sin(t*.0012)*(moving?14:5)+py*9;}
- let opacity=1-progress*(moving?.10:.38);if(small&&progress>.2)opacity*=.82;
- const p=frames[f1]||frames[0];const n=frames[f2]||p;function paint(img,alpha){if(!img)return;ctx.globalAlpha=alpha*opacity;ctx.drawImage(img,x-side/2,y-side/2,side,side);}paint(p,1-mix);paint(n,mix);ctx.globalAlpha=1;
+ let opacity=1-progress*(moving?.025:.08);
+ const p=frames[f1]||frames[0];const n=frames[f2]||p;function paint(img,alpha){if(!img)return;ctx.globalAlpha=alpha*opacity;ctx.drawImage(img,x-side/2,y-side/2,side,side);}if(p===n){paint(p,1);}else{paint(p,1);paint(n,mix);}ctx.globalAlpha=1;
  if(moving&&!staticMotion&&loaded){for(let k=0;k<2;k++){ctx.beginPath();for(let i=0;i<=80;i++){const a=i/80*Math.PI*2,rx=side*(.44+k*.10),ry=side*(.16+k*.03),rot=-.28+k*.55;let u=Math.cos(a)*rx,v=Math.sin(a)*ry;const xx=x+u*Math.cos(rot)-v*Math.sin(rot),yy=y+u*Math.sin(rot)+v*Math.cos(rot)+side*.06;if(!i)ctx.moveTo(xx,yy);else ctx.lineTo(xx,yy);}ctx.strokeStyle=k?"#a48aff38":"#46e4ff35";ctx.lineWidth=1;ctx.stroke();for(let i=0;i<8;i++){const a=t*.0012+i*Math.PI/4+k*.5,rx=side*(.44+k*.10),ry=side*(.16+k*.03),rot=-.28+k*.55,u=Math.cos(a)*rx,v=Math.sin(a)*ry;ctx.beginPath();ctx.arc(x+u*Math.cos(rot)-v*Math.sin(rot),y+u*Math.sin(rot)+v*Math.cos(rot)+side*.06,1.6,0,Math.PI*2);ctx.fillStyle=k?"#b7a3ff":"#8cffff";ctx.shadowColor=ctx.fillStyle;ctx.shadowBlur=10;ctx.fill();ctx.shadowBlur=0;}}}
  }
  function tick(t){raf=0;if(!visible||paused||media.matches)return;draw(t);raf=requestAnimationFrame(tick);}

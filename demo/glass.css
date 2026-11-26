@@ -1,0 +1,26 @@
+/* Clear glass: keep the living world visible through the entire interface. */
+:root{--muted:#c2d1e4;--line:rgba(158,204,240,.23)}
+.falcon-stage:after{background:linear-gradient(90deg,rgba(4,9,20,.86) 0%,rgba(4,9,20,.48) 27%,rgba(4,9,20,.08) 52%,transparent 80%),linear-gradient(0deg,rgba(4,9,20,.30),transparent 22%)}
+header{background:rgba(5,12,24,.34);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);border-color:rgba(170,218,255,.14)}
+.strip,footer{background:rgba(5,12,24,.18);backdrop-filter:none;border-color:rgba(170,218,255,.18)}
+.workspace{background:rgba(5,13,26,.20);backdrop-filter:none;-webkit-backdrop-filter:none;border:1px solid rgba(162,207,240,.36);box-shadow:0 24px 75px #0003,inset 0 1px 0 #d4f6ff1a}
+.sidebar,.history,.console{background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
+.sidebar,.history{border-color:rgba(174,216,250,.22)}
+.console-top,.execution{border-color:rgba(169,216,255,.25)}
+.agent-card{background:linear-gradient(135deg,rgba(19,42,60,.24),rgba(6,15,28,.10));backdrop-filter:none;-webkit-backdrop-filter:none;border-color:rgba(155,213,248,.30);box-shadow:inset 0 1px 0 #e3f9ff14}
+.agent-card:hover{background:rgba(26,75,92,.25);border-color:#8cd4e4}
+.agent-icon{background:rgba(42,89,106,.26);border-color:rgba(157,222,240,.35)}
+.agent:hover,.agent[aria-pressed=true]{background:rgba(55,111,141,.30);border-color:rgba(151,218,244,.45)}
+.chips button,.small,.history-item,.note,.ghost,.nav-cta{background:rgba(8,22,39,.32);border-color:rgba(167,213,244,.30)}
+.chips button[aria-pressed=true]{background:rgba(27,91,94,.29);border-color:#86d1cf;color:#bbfff1}
+.field input,.field textarea,.field select{background:rgba(3,11,23,.40);border-color:rgba(166,211,247,.34);color:#fff;text-shadow:0 1px 3px #000,0 0 8px #0008}
+.field input:focus,.field textarea:focus,.field select:focus{background:rgba(3,11,23,.55);border-color:#9df4df}
+pre{background:rgba(3,12,26,.40);border-color:rgba(156,216,244,.33);color:#f0f8ff}
+.approval{background:rgba(30,24,13,.36);border-color:#d4b36a}
+.final{background:linear-gradient(115deg,rgba(22,59,75,.22),rgba(40,28,68,.20));border-color:rgba(155,211,247,.28)}
+.section-head h2,.section-head p,.workspace h3,.workspace h4,.workspace label,.workspace p,.workspace .event,.workspace .muted,.workspace .side-head,.workspace .side-foot,.workspace .history-label,.workspace .mode>span,.workspace .eyebrow,.workspace .state,.workspace .agent,.workspace .history-item,.workspace .note,.workspace pre,.agent-card h3,.agent-card p,.trust-grid h3,.trust-grid p,.preview-note,.strip-inner span,.strip-inner strong,.final h2,.foot{ text-shadow:0 1px 3px #000,0 0 9px rgba(0,0,0,.9)}
+.workspace .field label,.workspace .console-top p,.workspace .event,.workspace .muted,.workspace .agent,.workspace .side-head,.workspace .history-label,.workspace .mode>span,.agent-card p{color:#dce8f6}
+.workspace .primary,.hero .primary,.final .primary{color:#071c22;text-shadow:none}
+.workspace .state{background:rgba(3,12,24,.36);color:#baffef}
+@media(max-width:760px){.falcon-stage:after{background:linear-gradient(180deg,rgba(4,9,20,.65) 0%,rgba(4,9,20,.20) 33%,transparent 62%,rgba(4,9,20,.20) 100%)}.workspace{background:rgba(5,13,26,.24)}.field input,.field textarea,.field select{background:rgba(3,11,23,.44)}}
+@media(prefers-contrast:more){.workspace,.agent-card,.strip,.final{background:rgba(5,13,26,.78)}.field input,.field textarea,.field select,pre{background:rgba(3,11,23,.84)}}
