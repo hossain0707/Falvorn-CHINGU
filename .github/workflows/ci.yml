@@ -19,4 +19,4 @@ jobs:
       - run: node --check chingu/static/app.js
 
       - run: node --check demo/app.js
-      - run: node --test demo/engine.test.cjs
+      - run: node --test demo/engine.test.cjs demo/swarm.test.cjs demo/hosted-ai.test.cjs demo/provider-connections.test.cjs demo/reliability.test.cjs

@@ -1,0 +1,9 @@
+# CHINGU reliability v2 — deployment gates
+
+Native streaming, terminal finish-state detection, explicit continuation, safe DOM Markdown, 2,400 output-token cap, bounded three-call team mode, model/latency/usage metadata and optional non-content telemetry. No automatic retries or paid fallback. Team mode is planner/reviewer/specialist model calls, not external tool execution. Invite-only pilot keeps per-instance 6 calls/minute, 60/day, concurrency 2. Shared quota is optional and not active without database. No new billing services provisioned.
+
+## Database setup
+Create dedicated CHINGU Supabase project, never reuse Trippy. Apply supabase/migrations/202611260001_chingu.sql. Configure CHINGU_SUPABASE_URL, CHINGU_SUPABASE_PUBLISHABLE_KEY, CHINGU_SUPABASE_SERVICE_KEY (legacy service-role JWT, sensitive), CHINGU_ORIGIN, CHINGU_DAILY_CALL_CAP. Keep CHINGU_PUBLIC_AI_ENABLED=false until auth, two-user RLS isolation, service role, rate limits, per-user quotas and billing tests pass. Invite accounts through Supabase Auth; password sign-in sets short HttpOnly Secure SameSite cookie, no refresh. Explicit private memory save/delete. No self-service signup. Quota RPC is atomic, global model-call cap, not exact token/dollar cap. No account database currently provisioned.
+
+## Release gates
+Run all Node and Python tests, live smoke, desktop/mobile QA and real streaming tests for each authorized provider. Check Vercel and provider plan eligibility, independent security review, per-user limits, load testing and incident response before commercial release. Direct subscription connections still require official approvals. General MCP external execution, distributed task queue, persistent worker and cloud Python service remain future infrastructure; local Python runtime is retained. Rollback: prior deployment dpl_vS8kdibou1PFL1HPpnF9xJwgBcs3.
