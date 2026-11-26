@@ -1,0 +1,36 @@
+const {chromium}=require("playwright");
+const assert=require("node:assert/strict");
+(async()=>{
+ const browser=await chromium.launch({headless:true});
+ try{
+  const page=await browser.newPage({viewport:{width:1440,height:900},reducedMotion:"reduce"});
+  const errors=[];page.on("pageerror",e=>errors.push(e.message));
+  await page.goto(process.env.CHINGU_TEST_URL||"https://falvorn-chingu.vercel.app/");
+  await page.locator("#agents button").first().waitFor();
+  assert.equal(await page.locator("#agents button").count(),6);
+  assert.equal(await page.locator("#cards button").count(),6);
+  assert.ok(await page.locator("#orb").evaluate(c=>c.width>0&&c.height>0));
+  await page.locator("#agents button").filter({hasText:"Work CHINGU"}).click();
+  await page.locator("#field-hours").fill("4");
+  await page.locator("#field-rate").fill("20");
+  await page.locator("#field-overhead").fill("25");
+  await page.locator("#run").click();
+  await page.locator("#result-wrap").waitFor();
+  assert.match(await page.locator("#result").innerText(),/Total: 100.00 USD/);
+  const download=page.waitForEvent("download");await page.locator("#download").click();assert.equal((await download).suggestedFilename(),"chingu-deliverable.txt");
+  await page.locator("#agents button").filter({hasText:"Personal CHINGU"}).click();
+  await page.getByRole("button",{name:"Remember a preference"}).click();
+  await page.locator("#field-note").fill("QA sample");
+  await page.locator("#run").click();await page.locator("#approval").waitFor();
+  await page.locator("#reject").click();assert.match(await page.locator("#notes").innerText(),/No approved notes/);
+  await page.locator("#run").click();await page.locator("#approval").waitFor();await page.locator("#approve").click();
+  assert.match(await page.locator("#notes").innerText(),/QA sample/);
+  await page.locator("#clear").click();assert.match(await page.locator("#notes").innerText(),/No approved notes/);assert.match(await page.locator("#history").innerText(),/No workflows yet/);
+  await page.screenshot({path:"chingu-desktop.png",fullPage:true});
+  await page.setViewportSize({width:390,height:844});await page.reload();await page.locator("#agents button").first().waitFor();
+  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1));
+  await page.screenshot({path:"chingu-mobile.png",fullPage:true});
+  assert.deepEqual(errors,[]);
+  console.log("PASS: six agents, canvas, edited budget, download, approval/rejection, session clear, mobile overflow, no page errors.");
+ }finally{await browser.close();}
+})().catch(e=>{console.error(e);process.exitCode=1;});
