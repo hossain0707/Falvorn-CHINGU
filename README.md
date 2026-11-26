@@ -14,11 +14,15 @@ A local-first, model-agnostic agent platform for personal and professional work.
 ![Local%20AI](https://img.shields.io/badge/Local%20AI-Ollama-8259CE?style=flat-square)
 ![Status](https://img.shields.io/badge/Status-Engineering%20Preview-orange?style=flat-square)
 
-[Quick start](#quick-start) · [Agent ecosystem](#agent-ecosystem) · [Capabilities](#capabilities) · [Security](SECURITY.md) · [Roadmap](docs/ROADMAP.md)
+[Public demo](https://falvorn-chingu.vercel.app) · [Quick start](#quick-start) · [Agent ecosystem](#agent-ecosystem) · [Capabilities](#capabilities) · [Security](SECURITY.md) · [Roadmap](docs/ROADMAP.md)
 
 </div>
 
 ---
+
+## Public demo
+
+Explore the [interactive technical preview](https://falvorn-chingu.vercel.app). This static, noncommercial demo uses scripted examples and browser-local tools, not live LLM inference. No API key or login is required. For real model execution, use the local quick start below.
 
 ## Overview
 
