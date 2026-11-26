@@ -1,0 +1,9 @@
+# CHINGU provider connections
+
+This invite-only hosted pilot supports Groq, per-request OpenAI API credentials, and per-request Anthropic API credentials. API billing is distinct from ChatGPT/Claude subscription allowances. The UI requires explicit consent for user-funded API requests, clears credentials after submission, and does not save them in history or persistent browser storage. The server receives the key over HTTPS, forwards only to a fixed official provider origin, never logs it in application code, and uses no fallback. Infrastructure-level logging and abuse controls must be independently reviewed before public anonymous release.
+
+ChatGPT subscription access on a hosted commercial website requires approved partner access and authorized inference scope. Do not reuse third-party client IDs or subscription tokens. Request the website integration via https://developers.openai.com/siwc/request-client-id and verify eligibility for plan-funded inference separately. Local open-source integration has distinct requirements; the repository license and eligibility must be reviewed before implementing it. No automatic subscription sign-in is active.
+
+Claude Code handoff copies the task for the official native application; the user signs in there. CHINGU does not capture subscription credentials or retrieve native results. Claude Platform OAuth Linked billing is a separate beta path for eligible customer organizations: https://platform.claude.com/docs/en/manage-claude/oauth-apps/overview . This is not personal Claude subscription billing. No OAuth registration, commercial approval, or persistent accounts are implemented.
+
+Run node --test demo/hosted-ai.test.cjs demo/provider-connections.test.cjs. Live provider testing requires separate authorized API keys and consent to applicable charges.
