@@ -1,3 +1,3 @@
 # CHINGU companion artwork
 
-The approved six-frame WebP sprite and resting poster must be added here as `falcon-frames.webp` and `falcon-rest.webp` before deployment. The standalone motion prototype and artwork package are supplied separately. Do not publish this branch before adding the artwork and running browser QA.
+Approved two-falcon artwork, derived from the original Falvorn AI visual reference. The WebP sprite contains six equal animation cells. The static rest poster provides a fallback. Animation follows the workflow state; no remote inference or backend is exposed.
