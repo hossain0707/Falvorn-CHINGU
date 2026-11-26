@@ -31,7 +31,7 @@ const assert=require("node:assert/strict");
   assert.match(await page.locator("#notes").innerText(),/QA sample/);
   await page.locator("#clear").click();assert.match(await page.locator("#notes").innerText(),/No approved notes/);assert.match(await page.locator("#history").innerText(),/No workflows yet/);
   await page.screenshot({path:"chingu-desktop.png",fullPage:true});
-  await page.setViewportSize({width:390,height:844});await page.reload();await page.locator("#agents button").first().waitFor();
+  await page.emulateMedia({reducedMotion:"no-preference"});await page.locator("#agents button").filter({hasText:"Work CHINGU"}).click();await page.locator("#run").click();await page.waitForFunction(()=>Number(document.querySelector("#falcon-stage").dataset.swarmCount)>0);await page.locator("#result-wrap").waitFor();await page.waitForFunction(()=>document.querySelector("#falcon-stage").dataset.swarmPhase==="rest");await page.emulateMedia({reducedMotion:"reduce"});await page.setViewportSize({width:390,height:844});await page.reload();await page.locator("#agents button").first().waitFor();
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1));
   await page.screenshot({path:"chingu-mobile.png",fullPage:true});
   assert.deepEqual(errors,[]);

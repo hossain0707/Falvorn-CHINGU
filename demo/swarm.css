@@ -1,0 +1,5 @@
+/* The swarm stays in the non-interactive full-page background. */
+.swarm-status{font-size:11px;line-height:1.5;letter-spacing:.025em;color:#9ef0e4;margin:2px 0 8px;text-shadow:0 1px 5px #000}
+.swarm-caption{font-size:10px!important;color:#b0c2d8!important;min-height:0!important;margin-top:7px}
+body:has(#falcon-stage[data-swarm-phase="flying"]) .falcon-stage:after,body:has(#falcon-stage[data-swarm-phase="dispersing"]) .falcon-stage:after,body:has(#falcon-stage[data-swarm-phase="returning"]) .falcon-stage:after{background:linear-gradient(90deg,#04091477,transparent 65%),linear-gradient(0deg,#04091438,transparent 23%)}
+@media(prefers-reduced-motion:reduce){.swarm-status{display:none!important}}

@@ -1,0 +1,5 @@
+const test=require("node:test"),assert=require("node:assert/strict"),s=require("./swarm.js");
+test("count is workload-based and capped",()=>{assert.equal(s.count(2),12);assert.equal(s.count(3),18);assert.equal(s.count(100),24);assert.equal(s.count(3,true),9)});
+test("split, fly, return, rest without discontinuity",()=>{let a=s.create(0);a=s.transition(a,"running",100,["a","b","c"]);assert.equal(s.spread(a,100),0);assert.equal(s.spread(a,560),1);let b=s.transition(a,"complete",600);assert.equal(s.spread(b,600),1);assert.ok(s.spread(b,1100)<1);assert.equal(s.spread(b,1650),0)});
+test("early finish and approval return continuously",()=>{let a=s.transition(s.create(0),"running",0,["a","b"]);const v=s.spread(a,100);let b=s.transition(a,"approval",100);assert.equal(s.spread(b,100),v);assert.equal(s.spread(b,1150),0);let c=s.transition(b,"complete",1200);assert.equal(s.spread(c,1200),0)});
+test("flight starts and ends at home",()=>{const home={x:600,y:400,side:300},a=s.position(0,12,100,1000,800,home,0),b=s.position(0,12,1000,1000,800,home,1);assert.equal(a.x,570);assert.equal(a.y,391);assert.ok(b.x>=0&&b.x<=1000&&b.y>=0&&b.y<=800)});
