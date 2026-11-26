@@ -1,0 +1,10 @@
+const test=require("node:test"),assert=require("node:assert/strict"),{agents,run}=require("./engine.js");
+test("all workflow defaults produce a real deliverable or approval",()=>{for(const a of agents)for(const f of a.flows){const out=run(f.id,Object.fromEntries(f.fields.map(x=>[x.key,x.value])));assert.ok(out.steps.length);assert.ok(out.text||out.note);}});
+test("budget accepts user edits",()=>assert.match(run("budget",{hours:4,rate:20,overhead:25,currency:"USD"}).text,/Total: 100.00 USD/));
+test("planner allocates minutes",()=>assert.match(run("day",{start:"09:00",minutes:60,tasks:"A\nB"}).text,/09:30–10:00  B/));
+test("JSON rejects executable text and malformed JSON",()=>assert.throws(()=>run("json",{payload:"alert(1)"})));
+test("note requires approval",()=>assert.equal(run("note",{note:"hello"}).note,"hello"));
+test("risk score changes with inputs",()=>assert.match(run("risk",{risk:"R",owner:"O",likelihood:4,impact:5}).text,/20\/25/));
+test("invalid numeric values fail",()=>assert.throws(()=>run("budget",{hours:-1,rate:20,overhead:0,currency:"USD"})));
+test("studio exports actual supplied name",()=>assert.equal(JSON.parse(run("studio",{name:"Custom",goal:"G",steps:"A\nB"}).text).name,"Custom"));
+test("research analyzes text",()=>assert.match(run("text",{text:"agent agent tool"}).text,/agent: 2/));
