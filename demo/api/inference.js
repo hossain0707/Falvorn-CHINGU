@@ -1,18 +1,17 @@
 "use strict";
-const {timingSafeEqual,createHash,randomUUID}=require("node:crypto");
-const {configured,quotaConfigured,originOK,identity,reserve,bodyOf}=require("../lib/security.cjs");
+const {randomUUID}=require("node:crypto");
+const {configured,quotaConfigured,originOK,reserve,bodyOf}=require("../lib/security.cjs");
 const {parse,consume}=require("../lib/stream.cjs");
 const roles=["Personal planning and writing","Business deliverables and plans","Software engineering guidance","Research analysis of supplied evidence","Agent and workflow design","Organizational operations and policy drafts"];
 const model="openai/gpt-oss-20b";
-const hash=x=>createHash("sha256").update(x).digest();
 function createHandler(env=process.env,fetcher=globalThis.fetch,clock=Date.now){
- let minute=-1,day=-1,used=0,daily=0,active=0;
+ let minute=-1,day=-1,used=0,daily=0,active=0;const clients=new Map();
  return async function handler(req,res){
  const send=(n,x)=>{res.setHeader("Cache-Control","no-store");return res.status(n).json(x);};
- const key=env.GROQ_API_KEY,code=env.CHINGU_DEMO_CODE;
- const enabled=Boolean(key&&code&&code.length>=16&&env.CHINGU_AI_ENABLED==="true");
- const distributed=quotaConfigured(env),publicAI=distributed&&env.CHINGU_PUBLIC_AI_ENABLED==="true";
- if(req.method==="GET")return send(200,{available:enabled,distributedQuota:distributed,accounts:configured(env),publicAI,version:"reliability-v2"});
+ const key=env.GROQ_API_KEY;
+ const enabled=Boolean(key&&env.CHINGU_AI_ENABLED==="true");
+ const distributed=quotaConfigured(env),publicAI=enabled;
+ if(req.method==="GET")return send(200,{available:enabled,distributedQuota:distributed,accounts:configured(env),publicAI,version:"public-preview-v3"});
  if(req.method!=="POST")return send(405,{error:"Method not allowed."});
  if(!enabled)return send(503,{error:"Hosted AI is not configured."});
  if(!originOK(req,env))return send(403,{error:"Origin not allowed."});
@@ -20,15 +19,16 @@ function createHandler(env=process.env,fetcher=globalThis.fetch,clock=Date.now){
  if(Number(req.headers["content-length"]||0)>70000)return send(413,{error:"Request too large."});
  let body;try{body=bodyOf(req); }catch{return send(400,{error:"Invalid JSON."});}
  if(!body||typeof body!=="object"||Array.isArray(body))return send(400,{error:"Invalid request."});
- const {agent,prompt,access,provider="groq",apiKey,consent,mode="single",teamConsent,previous}=body;
- if(!(typeof access==="string"&&access.length<=256&&timingSafeEqual(hash(access),hash(code)))&&!(publicAI&&await identity(env,fetcher,req)))return send(401,{error:"Valid demo access code required."});
+ const {agent,prompt,provider="groq",apiKey,consent,mode="single",teamConsent,previous}=body;
  if(!Number.isInteger(agent)||!roles[agent]||typeof prompt!=="string"||!prompt.trim()||prompt.length>4000)return send(400,{error:"Select an agent and enter 1–4000 characters."});
  if(!["groq","openai","anthropic"].includes(provider))return send(400,{error:"Unsupported provider."});
  if(provider!=="groq"&&(consent!==true||typeof apiKey!=="string"||apiKey.length>512||!/^sk-[A-Za-z0-9_-]{10,}$/.test(apiKey)||apiKey.startsWith("sk-ant-oat")))return send(400,{error:"Use a valid provider API key and explicitly authorize API billing. Subscription tokens are not accepted."});
  if(!["single","team","continue"].includes(mode)||mode==="team"&&teamConsent!==true||mode==="continue"&&(typeof previous!=="string"||!previous.trim()||previous.length>24000))return send(400,{error:"Invalid execution mode or consent."});
- const start=clock(),slot=Math.floor(start/60000),d=Math.floor(start/86400000),units=mode==="team"?3:1;if(slot!==minute){minute=slot;used=0;}if(d!==day){day=d;daily=0;}
- if(used+units>6||daily+units>60||active>=2)return send(429,{error:"Pilot budget or concurrency cap reached."});
- used+=units;daily+=units;active++;
+ const start=clock(),slot=Math.floor(start/60000),d=Math.floor(start/86400000),units=mode==="team"?3:1;if(slot!==minute){minute=slot;used=0;}if(d!==day){day=d;daily=0;clients.clear();}
+ const ip=String(req.headers["x-vercel-forwarded-for"]||req.headers["x-forwarded-for"]||"unknown").split(",")[0].trim().slice(0,64);
+ let client=clients.get(ip);if(!client){if(clients.size>=256)return send(429,{error:"Preview busy. Try later."});client={slot,used:0,daily:0};}if(client.slot!==slot){client.slot=slot;client.used=0;}
+ if(used+units>6||daily+units>30||active>=2||client.used+units>3||client.daily+units>12)return send(429,{error:"Free preview usage limit reached. Try later."});
+ client.used+=units;client.daily+=units;clients.set(ip,client);used+=units;daily+=units;active++;
  let streaming=false,calls=0;const id=randomUUID(),controller=new AbortController(),timer=setTimeout(()=>controller.abort(),52000);if(typeof req.on==="function")req.on("aborted",()=>controller.abort());const emit=x=>{if(streaming&&!res.destroyed)res.write(JSON.stringify(x)+"\n")};
  try{
  if(distributed&&!(await reserve(env,fetcher,units)))return send(429,{error:"Shared quota limit reached."});

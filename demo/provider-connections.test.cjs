@@ -1,6 +1,6 @@
 const test=require("node:test"),assert=require("node:assert/strict"),{createHandler}=require("./api/inference.js");
-const env={GROQ_API_KEY:"mock-groq-key",CHINGU_DEMO_CODE:"test-code-123456789",CHINGU_AI_ENABLED:"true"};
-const base={agent:1,prompt:"Test",access:env.CHINGU_DEMO_CODE};
+const env={GROQ_API_KEY:"mock-groq-key",CHINGU_AI_ENABLED:"true"};
+const base={agent:1,prompt:"Test"};
 async function call(h,input){let status,result;const res={setHeader(){},status(n){status=n;return this},json(v){result=v;return this}};await h({method:"POST",headers:{"content-type":"application/json"},body:input},res);return {status,result};}
 test("OpenAI routes only to its official API with user key",async()=>{const key="sk-test1234567890";const mock=async(url,o)=>{assert.equal(url,"https://api.openai.com/v1/responses");assert.equal(o.headers.Authorization,"Bearer "+key);assert.equal(JSON.parse(o.body).store,false);return {ok:true,json:async()=>({output:[{type:"message",content:[{type:"output_text",text:"OpenAI result"}]}]})}};const r=await call(createHandler(env,mock),{...base,provider:"openai",apiKey:key,consent:true});assert.equal(r.result.text,"OpenAI result");assert.equal(r.result.provider,"openai")});
 test("Anthropic routes only to Messages API",async()=>{const key="sk-ant-api03-test1234567890";const mock=async(url,o)=>{assert.equal(url,"https://api.anthropic.com/v1/messages");assert.equal(o.headers["x-api-key"],key);return {ok:true,json:async()=>({content:[{type:"text",text:"Claude result"}]})}};const r=await call(createHandler(env,mock),{...base,provider:"anthropic",apiKey:key,consent:true});assert.equal(r.result.text,"Claude result")});
